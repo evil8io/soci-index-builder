@@ -153,6 +153,10 @@ jobs:
         run: |
           set -euo pipefail
           echo "${SHA}" > upstream-sha
+          if git diff --quiet upstream-sha; then
+            echo "upstream-sha is up to date"
+            exit 0
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "chore: build ${TAG}" upstream-sha
