@@ -100,7 +100,7 @@ jobs:
             -tags "osusergo netgo static_build lambda.norpc" \
             -ldflags '-extldflags "-static"' -o bootstrap
           zip "soci-index-generator-${{ matrix.arch }}.zip" bootstrap
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: soci-index-generator-${{ matrix.arch }}
           path: functions/source/soci-index-generator-lambda/soci-index-generator-${{ matrix.arch }}.zip
