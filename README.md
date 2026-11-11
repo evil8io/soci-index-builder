@@ -6,22 +6,22 @@ Lambda ZIPs for the AWS SOCI Index Builder, built from awslabs source with SOCI 
 
 The [AWS SOCI Index Builder](https://github.com/awslabs/cfn-ecr-aws-soci-index-builder) generates
 [SOCI](https://github.com/awslabs/soci-snapshotter) indices for images in Amazon ECR. AWS hosts
-its Lambda ZIPs in the `aws-quickstart` S3 buckets, and those ZIPs generate SOCI v1 indices only.
+its Lambda ZIPs in the `aws-quickstart` S3 buckets. The Lambdas from those ZIPs generate SOCI v1 indices only.
 SOCI v2 index generation requires a build from current source.
 
-This repository builds the two Lambdas from the awslabs source and publishes them as GitHub
+We build the two Lambdas from the awslabs source and publish them as GitHub
 release assets:
 
-- `ecr-image-action-event-filtering.zip` filters ECR image push events by repository and tag.
-- `soci-index-generator-amd64.zip` and `soci-index-generator-arm64.zip` generate the SOCI index
-  and push it back to the repository. Pick the ZIP that matches the Lambda architecture.
+- The Lambda in `ecr-image-action-event-filtering.zip` filters ECR image push events by repository and tag.
+- The Lambdas in `soci-index-generator-amd64.zip` and `soci-index-generator-arm64.zip` generate the SOCI
+  index and push it back to the repository. Pick the ZIP that matches the Lambda architecture.
 
-Each release also contains a `SHA256SUMS` file over all ZIPs, and each ZIP has a build
+Each release also contains a `SHA256SUMS` file over all ZIPs. Each ZIP has a build
 provenance attestation.
 
 ## Usage
 
-Download the assets for a pinned tag and verify them:
+Download the assets for a pinned tag. Then verify them:
 
 ```sh
 gh release download <tag> --repo evil8io/soci-index-builder
@@ -32,17 +32,17 @@ gh attestation verify soci-index-generator-arm64.zip --repo evil8io/soci-index-b
 Deploy the ZIPs with your own infrastructure code, for example as `aws_lambda_function`
 resources with `filename` and `source_code_hash`. Deployment notes:
 
-- The filter Lambda runs on a Python runtime, with handler
+- The filter Lambda runs on a Python runtime, with the handler
   `ecr_image_action_event_filtering_lambda_function.lambda_handler`.
 - The generator runs on `provided.al2023`. The ZIP contains a static `bootstrap` binary.
-- The env var `soci_index_version` on the generator selects `V1` or `V2`.
+- Set the env var `soci_index_version` on the generator to `V1` or `V2`.
 
 ## Build and versioning
 
-Upstream has no releases, so we track its `main` branch by commit. `build.yaml` runs daily. It
+Upstream does not have releases, so we track its `main` branch by commit. GitHub runs the workflow `build.yaml` daily. The workflow
 resolves the upstream HEAD, derives the tag, and builds a release when that tag does not exist
 yet. A tag has the form `v<YYYYMMDD>-<shortsha>`: the date of the upstream commit plus the first
-8 characters of its SHA. The tag is thus a pure function of the upstream commit.
+8 characters of its SHA. The tag thus depends only on the upstream commit.
 
 `upstream-sha` contains the last released upstream commit. The workflow updates it on `main`
 after each release, so the git log of that file is the build history. When nothing was built for
@@ -57,8 +57,8 @@ gh workflow run build.yaml -f upstream_sha=<sha>
 
 ## Relationship to upstream
 
-This repository repackages [awslabs/cfn-ecr-aws-soci-index-builder](https://github.com/awslabs/cfn-ecr-aws-soci-index-builder).
-It is not affiliated with, or endorsed by, Amazon Web Services. The upstream source is licensed
+We repackage [awslabs/cfn-ecr-aws-soci-index-builder](https://github.com/awslabs/cfn-ecr-aws-soci-index-builder) in this repository.
+This repository is not affiliated with, or endorsed by, Amazon Web Services. The upstream source is licensed
 under the Apache License 2.0.
 
 ## License
